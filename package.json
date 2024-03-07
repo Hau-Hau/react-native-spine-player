@@ -1,0 +1,81 @@
+{
+  "name": "react-native-spine-player",
+  "version": "0.0.1",
+  "description": "Spine2D for React-Native",
+  "main": "lib/commonjs/index.js",
+  "module": "lib/module/index.js",
+  "types": "lib/typescript/src/index.d.ts",
+  "react-native": "src/index.ts",
+  "source": "src/index.ts",
+  "files": [
+    "src",
+    "lib",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
+    "android",
+    "ios",
+    "cpp",
+    "example-component.podspec",
+    "!android/build",
+    "!ios/build"
+  ],
+  "keywords": [
+    "react-native",
+    "ios",
+    "android"
+  ],
+  "repository": "https://github.com/Hau-Hau/react-native-spine-player",
+  "author": "Piotr Michalewicz <piotr.a.michalewicz@gmail.com> (https://github.com/Hau-Hau)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Hau-Hau/react-native-spine-player/issues"
+  },
+  "homepage": "https://github.com/Hau-Hau/react-native-spine-player#readme",
+  "scripts": {
+    "init": "ts-node ./scripts/init.ts",
+    "build": "bob build",
+    "release": "release-it",
+    "lint:swift": "swiftlint ios",
+    "lint-fix:swift": "swiftlint --fix ios",
+    "prepack": "bob build"
+  },
+  "devDependencies": {
+    "@types/decompress": "^4.2.7",
+    "cross-env": "^7.0.3",
+    "decompress": "^4.2.1",
+    "fs-extra": "^11.2.0",
+    "prettier": "^3.0.3",
+    "react-native-builder-bob": "^0.20.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.2"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "codegenConfig": {
+    "name": "react-native-spine-player",
+    "type": "components",
+    "jsSrcsDir": "./src/specs"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.json",
+          "tsc": "./node_modules/.bin/tsc"
+        }
+      ]
+    ]
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ]
+}

@@ -1,0 +1,162 @@
+buildscript {
+    ext.safeExtGet = { prop, fallback ->
+        rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+    }
+    repositories {
+        google()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:7.4.2")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+    }
+}
+
+def getExtOrDefault(name, defaultValue) {
+    rootProject.ext.has(name) ? rootProject.ext.get(name) : defaultValue
+}
+
+def isNewArchitectureEnabled() {
+    // To opt-in for the New Architecture, you can either:
+    // - Set `newArchEnabled` to true inside the `gradle.properties` file
+    // - Invoke gradle with `-newArchEnabled=true`
+    // - Set an environment variable `ORG_GRADLE_PROJECT_newArchEnabled=true`
+    return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
+}
+
+apply plugin: 'com.android.library'
+
+if (isNewArchitectureEnabled()) {
+    apply plugin: 'com.facebook.react'
+}
+
+def reactNativeArchitectures() {
+    def value = project.getProperties().get("reactNativeArchitectures")
+    return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+}
+
+android {
+    // Conditional for compatibility with AGP <4.2.
+    if (project.android.hasProperty("namespace")) {
+        namespace "com.spineplayer"
+    } else {
+        // print
+        println "DEPRECATION WARNING: The `namespace` property is not available in your version of AGP. Please upgrade to AGP 4.2+."
+    }
+
+    compileSdk getExtOrDefault('compileSdkVersion', 31)
+
+    // Used to override the NDK path/version on internal CI or by allowing
+    // users to customize the NDK path/version from their root project (e.g. for M1 support)
+    if (rootProject.hasProperty("ndkPath")) {
+        ndkPath rootProject.ext.ndkPath
+    }
+    if (rootProject.hasProperty("ndkVersion")) {
+        ndkVersion rootProject.ext.ndkVersion
+    }
+
+    defaultConfig {
+        minSdkVersion getExtOrDefault('minSdkVersion', 21)
+        targetSdkVersion getExtOrDefault('targetSdkVersion', 31)
+        buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+
+        externalNativeBuild {
+            cmake {
+                abiFilters(*reactNativeArchitectures())
+                arguments "-DCMAKE_VERBOSE_MAKEFILE=1",
+                        "-DANDROID_ALLOW_UNDEFINED_SYMBOLS=ON",
+                        "-DANDROID_STL=c++_shared"
+            }
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
+
+    sourceSets {
+        main {
+            if (isNewArchitectureEnabled()) {
+                java.srcDirs += ['src/newarch', "${project.buildDir}/generated/source/codegen/java"]
+            } else {
+                java.srcDirs += ['src/oldarch']
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+
+    packagingOptions {
+        excludes = [
+                "**/libc++_shared.so",
+                "**/libfbjni.so",
+                "**/libjsi.so",
+                "**/libreact_nativemodule_core.so",
+                "**/libturbomodulejsijni.so",
+                "META-INF/**"
+        ]
+    }
+
+    buildFeatures {
+        buildConfig = true
+        // viewBinding true
+    }
+
+    // Restore later    
+    // buildTypes {
+    //     release {
+    //         minifyEnabled false
+    //         proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    //     }
+    // }
+}
+
+
+repositories {
+    maven {
+        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+        url "$rootDir/../../node_modules/react-native/android"
+    }
+    maven {
+        // Android JSC is installed from npm
+        url "$rootDir/../../node_modules/jsc-android/dist"
+    }
+
+    google()
+    mavenCentral()
+    maven { url 'https://www.jitpack.io' }
+}
+
+dependencies {
+    // Alternatively we can take react-native version from "$rootDir/../../node_modules/react-native/package.json"
+    // Possibly it would be even better solution but it needs some code and I don't have time for that now
+
+    //noinspection GradleDynamicVersion
+    implementation("com.facebook.react:react-android:+")
+
+    // or to keep backward compatibility with older versions of React Native:
+    //    implementation("com.facebook.react:react-native:+")
+
+    // Google Volley for easy images downloading
+    implementation('com.android.volley:volley:1.2.1')
+}
+
+if (isNewArchitectureEnabled()) {
+    // rncli & react-native-gradle-plugin use codegenConfig in package.json since react-native@0.70
+    // Use react{} for compatibility with react-native@0.68/0.69
+    react {
+        jsRootDir = file("../js/specs")
+        libraryName = 'react-native-spine-player'
+        codegenJavaPackageName = "com.spineplayer"
+    }
+}
