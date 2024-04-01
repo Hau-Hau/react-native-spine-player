@@ -57,13 +57,10 @@ public class SpinePlayerView extends ImageView {
         }
 
         String finalFileName = fileName;
-        ImageRequest request = new ImageRequest(uri, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap response) {
-                TextureCache.add(finalFileName, response);
-                TextureCache.acquire(finalFileName);
-                drawable.setImageUri(uri);
-            }
+        ImageRequest request = new ImageRequest(uri, response -> {
+            TextureCache.add(finalFileName, response);
+            TextureCache.acquire(finalFileName);
+            drawable.setImageUri(uri);
         }, Integer.MAX_VALUE, Integer.MAX_VALUE, ScaleType.CENTER, null, null);
         requestQueue.add(request);
     }

@@ -1,5 +1,7 @@
 package com.spineplayer.spine;
 
+import androidx.annotation.Nullable;
+
 public class SkeletonJson implements AutoCloseable
 {
     private long pointer;
@@ -14,7 +16,9 @@ public class SkeletonJson implements AutoCloseable
     private native void destroy(long pointer);
 
     private native long readSkeletonData(long pointer, String json);
+    @Nullable
     public SkeletonData readSkeletonData(String json) {
+        if (pointer == 0) return null;
         long skeletonDataPointer = readSkeletonData(pointer, json);
         return new SkeletonData(skeletonDataPointer);
     }

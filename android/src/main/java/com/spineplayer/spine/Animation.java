@@ -4,7 +4,6 @@ package com.spineplayer.spine;
 // as this class is managed internally by SkeletonData
 public class Animation {
     private final long pointer;
-    private boolean isDisposed;
 
     public Animation(long pointer) {
         this.pointer = pointer;
@@ -12,6 +11,7 @@ public class Animation {
 
     private native float getDuration(long pointer);
     public float getDuration() {
+        if (pointer == 0) return Integer.MIN_VALUE;
         return getDuration(pointer);
     }
 }

@@ -18,7 +18,7 @@ public class SkeletonRenderer implements AutoCloseable
 
     private native void draw(long skeletonRendererPointer, Bitmap bitmap, long skeletonPointer);
     public void draw(Bitmap bitmap, Skeleton skeleton) {
-        if (skeleton.getPointer() == 0) {
+        if (pointer == 0 || skeleton.getPointer() == 0) {
             return;
         }
 

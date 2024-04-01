@@ -99,7 +99,7 @@ public class SpinePlayerManager extends SimpleViewManager<SpinePlayerView> {
         }
 
         List<String> animations = new ArrayList<>();
-        for (int i = 0; i < (value != null ? value.size() : 0); i++) {
+        for (int i = 0; i < value.size(); i++) {
             animations.add(value.getString(i));
         }
 

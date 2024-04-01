@@ -25,7 +25,9 @@ public final class AnimationStateBindings {
         Event event = eventPointer == 0 ? null : new Event(eventPointer);
         EventDispatcher mEventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, viewTag);
         if (mEventDispatcher != null) {
-            mEventDispatcher.dispatchEvent(new SpineEvent(surfaceId, viewTag, convertEventToMap(eventType, event)));
+            if (eventType != null) {
+                mEventDispatcher.dispatchEvent(new SpineEvent(surfaceId, viewTag, convertEventToMap(eventType, event)));
+            }
         }
 
         if (event != null) {
@@ -51,7 +53,9 @@ public final class AnimationStateBindings {
 
         if (event != null) {
             try (EventData eventData = event.getData()) {
-                output.putMap("data", convertEventDataToMap(eventData));
+                if (eventData != null) {
+                    output.putMap("data", convertEventDataToMap(eventData));
+                }
             }
 
             output.putDouble("time", event.getTime());

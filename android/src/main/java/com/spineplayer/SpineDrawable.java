@@ -30,7 +30,7 @@ import com.spineplayer.spine.SkeletonRenderer;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Semaphore;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SpineDrawable extends Drawable implements Animatable, AutoCloseable {
@@ -110,7 +110,7 @@ public class SpineDrawable extends Drawable implements Animatable, AutoCloseable
             try (AtlasAttachmentLoader attachmentLoader = new AtlasAttachmentLoader(atlas)) {
                 try (SkeletonJson json = new SkeletonJson(attachmentLoader)) {
                     SkeletonData skeletonData = json.readSkeletonData(skeletonDataFile);
-                    skeleton = new Skeleton(skeletonData);
+                    skeleton = new Skeleton(Objects.requireNonNull(skeletonData));
                     skeleton.setToSetupPose();
                     skeleton.updateWorldTransform(physics);
 
