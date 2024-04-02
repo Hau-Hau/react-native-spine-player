@@ -12,10 +12,11 @@ Please be advised that this project is experimental in nature. Due to lack of ti
 Integration Steps
 -------------------------
 1. Copy the 'react-native-spine-player' directory into your project's directory.
-2. Navigate to the 'react-native-spine-player' directory and execute `npm run init`.
-3. Within the 'react-native-spine-player' directory, run `npm run build`.
-4. In your 'package.json', under 'dependencies', include `"react-native-spine-player": "file:react-native-spine-player"`.
-5. Use component
+2. Navigate to the 'react-native-spine-player' directory and execute `npm install`.
+3. Within the 'react-native-spine-player' directory, run `npm run init`.
+4. Within the 'react-native-spine-player' directory, run `npm run build`.
+5. In your 'package.json', under 'dependencies', include `"react-native-spine-player": "file:react-native-spine-player"`.
+6. Use component
 ```typescript
 import { useRef, useState } from "react";
 import { readAsStringAsync } from "expo-file-system";
