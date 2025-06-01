@@ -9,6 +9,11 @@ Still, it does work. It can handle multiple animations at a decent speed of 30 F
 
 Please be advised that this project is experimental in nature. Due to lack of time, I'm not able to provide support for any bugs or usage issues that may arise. However, feel free to utilize the code as you see fit for your own purposes.
 
+Archived Notice
+-------------------------
+This repository is archived because it contains an experimental implementation. Since its creation, [Esoteric Software](https://esotericsoftware.com/) has released official [Android](https://esotericsoftware.com/spine-android) and [iOS](https://esotericsoftware.com/spine-ios) runtimes, making this project obsolete.
+For better performance, reliability, and long-term support, it's strongly recommended to write your own React Native wrapper around the official runtimes rather than using this experimental codebase.
+
 Integration Steps
 -------------------------
 1. Copy the 'react-native-spine-player' directory into your project's directory.
